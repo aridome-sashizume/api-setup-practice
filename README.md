@@ -1,119 +1,58 @@
-# API開発スターターキット (Tutorial 13)
+# api-setup-practice
 
-このリポジトリは、API開発カリキュラム（Tutorial 13）のハンズオンで使用するスターターキットです。
-Laravel 10.x と Laravel Sail (Docker) を使用した開発環境が構築されています。
+## 概要
+COACHTECH 教材 Tutorial 11-1「API開発環境の構築と疎通確認」で作成した成果物です。
+API開発専用プロジェクトをセットアップ（Githubからクローン）し、「Hello World」を出力させる疎通確認を実施
 
-## ✅ 前提条件
+## 使用技術
+- PHP 8.x
+- Laravel 10.x
+- REST API（JSONレスポンス）
+- Postman（動作確認）
 
-* **Docker Desktop** がインストールされ、起動していること。
-* **Git** がインストールされていること。
-
-## 🚀 環境構築手順
-
-ターミナル（Windowsの場合はWSL2またはGit Bash推奨）を開き、以下の手順で環境を構築してください。
-
-### 1. リポジトリのクローン
-まずはプロジェクトをローカルにダウンロードします。
-
-```bash
-git clone https://github.com/coachtech-material/laravel-api-starter-forTutorial13.git
-cd laravel-api-starter-forTutorial13
+## ディレクトリ構成（抜粋）
+```text
+~/laravel-practice/
+└── 10-1-6_hands-on/
+    └── app-setup-practice/
+        ├── routes/                            #APIとのルーティングを実施
+             └── api.php
 ```
 
-### 2. 依存パッケージのインストール
-
-Dockerを使用してComposerパッケージをインストールします。ローカルにPHPやComposerがなくても実行可能です。
-
-**Mac / Linux の場合:**
-
-```bash
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php82-composer:latest \
-    composer install --ignore-platform-reqs
+## 学んだこと
+- POSTMANを用いたAPIの実行確認の方法
+    - URL部分に**URLパス**し、リクエストを設定することで容易にAPI実行を確認することができる。
+- route/api.phpにAPIを作成する。
+    - ルーティングの設定自体はコントローラーとほぼ同義
+    ```
+    Route::get('/api/hello', function () {
+    ```
+    ではなく、
+    ```
+    Route::get('/hello', function () {
+    ```でOK
+## 動作確認
+1. GithubからAPI開発専用のスターターキットをクローン（私のGithubからクローン）
 ```
-
-**Windows (PowerShell) の場合:**
-
-```powershell
-docker run --rm `
-    -v "${PWD}:/var/www/html" `
-    -w /var/www/html `
-    laravelsail/php82-composer:latest `
-    composer install --ignore-platform-reqs
+git clone git@github.com:aridome-sashizume/api-setup-practice.git
 ```
-
-### 3. 環境設定ファイルの作成
-
-`.env.example` をコピーして `.env` ファイルを作成します。
-
-```bash
-cp .env.example .env
+2. sailの起動
 ```
-
-### 4. Docker環境の起動 (Laravel Sail)
-
-コンテナを起動します。初回はイメージのビルドに数分かかる場合があります。
-
-```bash
 ./vendor/bin/sail up -d
 ```
-
-### 5. アプリケーションキーの生成
-
-Laravelの暗号化キーを生成します。
-
-```bash
-./vendor/bin/sail artisan key:generate
+3. POSTMANを起動し、HTMLでGETメソッドを設定し以下のURLを入力し、送信をクリック
 ```
-
-### 6. データベースの準備 (マイグレーション & シーダー)
-
-テーブルを作成し、テストデータを投入します。
-
-```bash
-./vendor/bin/sail artisan migrate:fresh --seed
+http://localhost/api/hello
 ```
-
-### 7. 動作確認
-
-ブラウザで以下のURLにアクセスしてください。LaravelのWelcomeページが表示されれば構築完了です。
-
-* URL: http://localhost
-
----
-
-## 📝 開発のヒント
-
-### テストユーザーについて
-
-シーダー (`UserSeeder`) により、以下のテストユーザーが自動的に作成されています。認証機能は実装されていませんが、タスクの所有者 (`user_id`) としてこのIDを使用します。
-
-* **User ID**: `1`
-* **Name**: `Test User`
-* **Email**: `test@example.com`
-
-### サンプルタスクについて
-
-シーダー (`TaskSeeder`) により、テストユーザー（ID: 1）に紐づくサンプルタスクが5件作成されています。
-
-### 開発フロー
-
-Tutorial 13のハンズオンでは、主に以下のファイルを編集・作成します。
-
-1. **ルーティング**: `routes/api.php`
-2. **コントローラー**: `app/Http/Controllers/Api/` (新規作成)
-3. **APIリソース**: `app/Http/Resources/` (新規作成)
-
-### よく使うコマンド
-
-* **コンテナの起動**: `./vendor/bin/sail up -d`
-* **コンテナの停止**: `./vendor/bin/sail down`
-* **Artisanコマンド**: `./vendor/bin/sail artisan ...`
-* **ログの確認**: `./vendor/bin/sail logs -f`
-
-### APIテストツール
-
-本カリキュラムでは、VSCode拡張機能の **Thunder Client** を使用して動作確認を行います。
+返却されたステータスが**200 OK**と表示され、メッセージに以下が表示されれば成功
+```
+{
+    "message": "Hello, World!"
+}
+```
+※予め、**routes/api.php**に以下の内容でルーティングを設定している。
+```
+Route::get('/hello',function(){
+    return response()->json(['message' => 'Hello, World!']);
+});
+```
