@@ -30,7 +30,8 @@ API開発専用プロジェクトをセットアップ（Githubからクロー�
     ではなく、
     ```
     Route::get('/hello', function () {
-    ```でOK
+    ```
+    でOK
 ## 動作確認
 1. GithubからAPI開発専用のスターターキットをクローン（私のGithubからクローン）
 ```
